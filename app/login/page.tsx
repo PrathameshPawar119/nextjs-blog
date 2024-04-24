@@ -34,6 +34,7 @@ export default function Login() {
         signInWithEmailAndPassword(auth, creds.email, creds.password)
           .then((userCredential) => {
             // Success
+            console.log(userCredential.user);
             const user = userCredential.user;
             toast.success("Logged in Successfully !", {
               position: toast.POSITION.BOTTOM_LEFT,
@@ -43,6 +44,17 @@ export default function Login() {
               const { email, displayName, uid } = user;
               dispatch(loginUser({ email, username: displayName, uid }));
             }
+
+            user.getIdToken()
+            .then((idToken) => {
+              // Use the ID token for secure communication (refer to Firebase documentation)
+              console.log("ID Token:", idToken);
+              localStorage.setItem("idToken", idToken);
+            })
+            .catch((error) => {
+              console.error("Error getting ID token:", error);
+            });
+
             router.push('/posts');
           })
           .catch((error) => {
